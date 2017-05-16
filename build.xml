@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
+<project name="PDFOne" default="build" basedir=".">
+
+	<path id="project.classpath">
+		<pathelement location="."/>
+	</path>
+
+	<target name="init">
+		<property name="source" value="src"/>
+		<property name="outDir" value="build-outputs"/>
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="${outDir}"/>
+		<mkdir dir="${outDir}"/>
+	</target>
+
+	<target name="build" depends="clean">
+		<echo message="${ant.project.name}: ${ant.file}"/>
+
+		<!--Compile source-->
+		<javac destdir="${outDir}" excludes="">
+			<src path="${source}"/>
+			<classpath refid="project.classpath"/>
+		</javac>
+
+		<!--Generate Docs-->
+		<javadoc public="true" windowtitle="Gnostice PDFOne Documentation"
+				destdir="${outDir}/docs"
+				link="http://java.sun.com/j2se/1.5.0/docs/api"
+				author="false">
+			<packageset dir="${source}" defaultexcludes="yes">
+				<include name="com/gnostice/pdfone/**"/>
+			</packageset>
+			<header><![CDATA[<h3 align='center' style='font-size: 14px; font-style: normal;'>Gnostice PDFOne</h3>]]></header>
+			<footer><![CDATA[<center>Gnostice PDFOne</center>]]></footer>
+			<bottom><![CDATA[<font size='-1'>To contact our support team, send an e-mail to <a href='mailto:Gnostice Support Team <support@gnostice.com>?subject=PDFOne Java:%20'>support@gnostice.com</a>. <br>&nbsp;<br><center>&copy; 2006 Gnostice Information Technologies Private Limited. All rights reserved.<br><a href='http://www.gnostice.com/'>www.gnostice.com</a></center></font>]]></bottom>
+			<doctitle><![CDATA[<h1>Gnostice PDFOne</h1>]]></doctitle>
+			<tag name="gnostice.example" description="Sample Code"/>
+		</javadoc>
+		
+		<!--Generate JAR-->
+		<jar destfile="${outDir}/PDFOneJava.jar">
+			<manifest>
+			  <attribute name="Implementation-Vendor" 
+                     value="Gnostice"/>
+			  <attribute name="Implementation-Title" 
+                     value="PDFOne Java"/>
+            </manifest>
+			<fileset dir="${outDir}">
+				<include name="**/*.class"/>
+			</fileset>
+		</jar>
+		
+		<!--Copy Samples-->
+		<echo message="COPYING SAMPLES"/>
+		<copy todir="${outDir}/samples"
+				filtering="false">
+			<fileset dir="Samples">
+				<exclude name="**/*.class"/>
+			</fileset>
+		</copy>
+		
+		<!--Delete all .class files in outputs directory-->
+		<echo message="DELETING ALL CLASS FILES IN OUTPUT DIRECTORY"/>
+		<delete includeEmptyDirs="true">
+			<fileset dir="${outDir}/com"/>
+		</delete>
+		
+	</target>
+</project>
